@@ -20,9 +20,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     static final String COLUMN_NUMBER = "number";
     static final String COLUMN_ID = "id";
     static final String CREATE_QUERY = "create table "+TABLE_NAME+"("
-            + COLUMN_ID+" integer primary key,"
-            + COLUMN_NAME+" text,"
-            + COLUMN_NUMBER+" text)";
+                                        + COLUMN_ID+" integer primary key,"
+                                        + COLUMN_NAME+" text,"
+                                        + COLUMN_NUMBER+" text)";
     static final int DB_VERSION = 1;
 
     public DatabaseHelper(Context context) {

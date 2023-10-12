@@ -1,8 +1,6 @@
 package com.example.appbar2;
 
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatDelegate;
@@ -46,7 +44,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             }
 
         });
-
     }
 }
 
