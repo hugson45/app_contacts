@@ -1,39 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.codificador.contactapp.NewContactActivity"
     android:orientation="vertical"
     >
 
     <EditText
-        android:layout_margin="5dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginLeft="80dp"
         android:id="@+id/editTextName"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
-        android:hint="enter the contact name"
+        android:hint="Name"
+
          />
 
     <EditText
-        android:layout_margin="5dp"
         android:id="@+id/editTextNumber"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="80dp"
         android:ems="10"
-        android:inputType="phone"
-        android:hint="enter the contact number"
-        />
+        android:hint="Number"
+        android:inputType="phone" />
 
-    <Button
-        android:layout_margin="5dp"
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonAdd"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/colorAccent"
+        android:layout_marginTop="200dp"
+        android:layout_marginLeft="100dp"
+        android:text="Save Contact"
         android:textColor="@color/white"
-        android:text="Save Contact" />
-</LinearLayout>
+        android:bottomRightRadius="10dp"
+        android:bottomLeftRadius="10dp"
+        android:topLeftRadius="10dp"
+        android:topRightRadius="10dp" />
+</RelativeLayout>

@@ -4,11 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.codificador.contactapp.ViewContactActivity">
-
+    android:orientation="vertical">
     <LinearLayout
-        android:background="@color/layoutBg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="30dp"
@@ -48,16 +45,19 @@
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:orientation="horizontal">
-
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonCall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginRight="10dp"
-            android:background="@color/colorAccent"
+            android:layout_marginRight="100dp"
+            android:layout_marginLeft="100dp"
+            android:bottomRightRadius="10dp"
+            android:bottomLeftRadius="10dp"
+            android:topLeftRadius="10dp"
+            android:topRightRadius="10dp"
             android:textColor="@color/white"
-            android:text="Call" />
+            android:text="Zadzwoń" />
 
     </LinearLayout>
 </LinearLayout>

@@ -6,6 +6,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -42,12 +43,17 @@ public class EditContactActivity extends AppCompatActivity {
                 String name = editTextName.getText().toString();
                 String number = editTextNumber.getText().toString();
                 //don't update contact id, because just we are updating the name & number
-                contact.setName(name);
-                contact.setNumber(number);
-                Intent intent = new Intent();
-                intent.putExtra("contact",contact);
-                setResult(RESULT_OK,intent);
-                finish();
+                if ((name.matches("")) || number.matches(""))
+                {
+                    Toast.makeText(EditContactActivity.this, "Brak wypełnionych pól", Toast.LENGTH_SHORT).show();
+
+                }else {
+                    Contact contact = new Contact(name, number);
+                    Intent intent = new Intent();
+                    intent.putExtra("contact", contact);
+                    setResult(RESULT_OK, intent);
+                    finish();
+                }
             }
         });
     }
