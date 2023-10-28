@@ -5,9 +5,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Filter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Locale;
 
 /**
  * Created by Seng on 11/14/2017.
@@ -17,6 +20,7 @@ public class ContactAdapter extends BaseAdapter{
 
     ArrayList<Contact> contacts;
     LayoutInflater inflater;
+    ArrayList<Contact> filteredList = new ArrayList<>();
 
     public ContactAdapter(Context context, ArrayList<Contact> list){
         contacts = list;
@@ -59,5 +63,40 @@ public class ContactAdapter extends BaseAdapter{
 
     public void updateContact(Contact contact,int position){
         contacts.set(position,contact);
+    }
+
+    public Filter getFilter()
+    {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+                String charString = charSequence.toString();
+                if (charString.isEmpty()) {
+                    filteredList = contacts;
+                } else {
+                    ArrayList<Contact> MountainFilteredList = new ArrayList<>();
+                    for (Contact item : contacts) {
+                        if (item.getName().toLowerCase().contains(charString.toLowerCase())) {
+                            MountainFilteredList.add(item);
+                        }
+                    }
+                    filteredList = MountainFilteredList;
+                }
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = filteredList;
+                return filterResults;
+
+            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+
+                contacts.clear();
+                contacts.addAll((Collection<? extends Contact>) filterResults.values);
+                filteredList = (ArrayList<Contact>) filterResults.values;
+                notifyDataSetChanged();
+            }
+        };
+
     }
 }

@@ -70,6 +70,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return list;
     }
 
+    public ArrayList<Contact> Search (String name) {
+        ArrayList<Contact> search = new ArrayList<>();
+        SQLiteDatabase database = getReadableDatabase();
+        String selectQuery = "SELECT  * FROM contact " + " WHERE Name LIKE '%" + name + "%'";
+        Cursor cursor = database.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+        cursor.close();
+        return search;
+
+    }
+
     public int delete(long id){
         SQLiteDatabase database = getWritableDatabase();
         String whereArgs[] = {id+""};

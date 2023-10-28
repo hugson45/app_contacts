@@ -11,17 +11,23 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.view.MenuItemCompat;
 
-public class ContactActivity extends AppCompatActivity {
+import java.util.ArrayList;
+
+public class ContactActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
     ListView listView;
     ContactAdapter adapter;
     DatabaseHelper databaseHelper;
+
+
 
     static final int NEW_CONTACT_REQUEST_CODE = 1;
     static final int EDIT_CONTACT_REQUEST_CODE = 2;
@@ -38,12 +44,23 @@ public class ContactActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        MenuItem SearchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(SearchItem);
+        searchView.setOnQueryTextListener(this);
 
-    private void initViews(){
+        return super.onCreateOptionsMenu(menu);
+
+
+    }
+
+    private void initViews() {
         listView = findViewById(R.id.listView);
 
         databaseHelper = new DatabaseHelper(ContactActivity.this);
-        adapter = new ContactAdapter(ContactActivity.this,databaseHelper.getAllContacts());
+        adapter = new ContactAdapter(ContactActivity.this, databaseHelper.getAllContacts());
         listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
@@ -55,41 +72,38 @@ public class ContactActivity extends AppCompatActivity {
             }
         });
         registerForContextMenu(listView);
+
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main,menu);
-        return super.onCreateOptionsMenu(menu);
-    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-            if (item.getItemId() == R.id.actionAdd) {
-                Intent intent = new Intent(ContactActivity.this, NewContactActivity.class);
-                startActivityForResult(intent, NEW_CONTACT_REQUEST_CODE);
-            }
-            int id = item.getItemId();
-            if (id == android.R.id.home) {
-                finish();
-            }
-            return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.actionAdd) {
+            Intent intent = new Intent(ContactActivity.this, NewContactActivity.class);
+            startActivityForResult(intent, NEW_CONTACT_REQUEST_CODE);
         }
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
-    private void viewContact(Contact contact){
+    private void viewContact(Contact contact) {
         Intent viewContactIntent = new Intent(ContactActivity.this, ViewContactActivity.class);
-        viewContactIntent.putExtra("id",contact.getId());
-        viewContactIntent.putExtra("name",contact.getName());
-        viewContactIntent.putExtra("number",contact.getNumber());
+        viewContactIntent.putExtra("id", contact.getId());
+        viewContactIntent.putExtra("name", contact.getName());
+        viewContactIntent.putExtra("number", contact.getNumber());
         startActivity(viewContactIntent);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == NEW_CONTACT_REQUEST_CODE){
-            if(resultCode == RESULT_OK){
+        if (requestCode == NEW_CONTACT_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
                 Contact contact = (Contact) data.getSerializableExtra("contact");
                 long insertedId = databaseHelper.insertContact(contact);
                 contact.setId(insertedId);
@@ -97,12 +111,12 @@ public class ContactActivity extends AppCompatActivity {
                 adapter.notifyDataSetChanged();
                 Toast.makeText(this, "New contacts added successfully.", Toast.LENGTH_SHORT).show();
             }
-        }else if(requestCode == EDIT_CONTACT_REQUEST_CODE){
-            if(resultCode == RESULT_OK){
+        } else if (requestCode == EDIT_CONTACT_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
                 Contact contact = (Contact) data.getSerializableExtra("contact");
                 int rows = databaseHelper.update(contact);
-                if(rows > 0){
-                    adapter.updateContact(contact,selectedPos);
+                if (rows > 0) {
+                    adapter.updateContact(contact, selectedPos);
                     adapter.notifyDataSetChanged();
                     Toast.makeText(this, "Contact updated successfully.", Toast.LENGTH_SHORT).show();
                 }
@@ -113,7 +127,7 @@ public class ContactActivity extends AppCompatActivity {
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        getMenuInflater().inflate(R.menu.option_menu,menu);
+        getMenuInflater().inflate(R.menu.option_menu, menu);
         menu.setHeaderTitle("Options");
     }
 
@@ -123,49 +137,71 @@ public class ContactActivity extends AppCompatActivity {
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         selectedPos = menuInfo.position;
-        if (item.getItemId() == R.id.actionCall)
-        {
+        if (item.getItemId() == R.id.actionCall) {
             call((Contact) adapter.getItem(selectedPos));
         }
         if (item.getItemId() == R.id.actionEdit) {
 
             edit((Contact) adapter.getItem(selectedPos));
         }
-        if (item.getItemId() == R.id.actionDelete)
-        {
-            delete((Contact) adapter.getItem(selectedPos),selectedPos);
+        if (item.getItemId() == R.id.actionDelete) {
+            delete((Contact) adapter.getItem(selectedPos), selectedPos);
         }
         return super.onContextItemSelected(item);
     }
 
-    private void call(Contact contact){
-        if(checkPermission()){
+    private void call(Contact contact) {
+        if (checkPermission()) {
             Intent callIntent = new Intent(Intent.ACTION_CALL);
-            callIntent.setData(Uri.parse("tel:"+contact.getNumber()));
+            callIntent.setData(Uri.parse("tel:" + contact.getNumber()));
             startActivity(callIntent);
         }
     }
 
-    private void edit(Contact contact){
+    private void edit(Contact contact) {
         Intent intent = new Intent(ContactActivity.this, EditContactActivity.class);
-        intent.putExtra("contact",contact);
+        intent.putExtra("contact", contact);
         startActivityForResult(intent, EDIT_CONTACT_REQUEST_CODE);
     }
 
-    private void delete(Contact contact,int position){
+    private void delete(Contact contact, int position) {
         int rows = databaseHelper.delete(contact.getId());
-        if(rows > 0){
+        if (rows > 0) {
             adapter.removeContact(position);
             adapter.notifyDataSetChanged();
             Toast.makeText(this, "Contact successfully deleted", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private boolean checkPermission(){
-        if(ActivityCompat.checkSelfPermission(ContactActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(ContactActivity.this,new String[]{Manifest.permission.CALL_PHONE},123);
+    private boolean checkPermission() {
+        if (ActivityCompat.checkSelfPermission(ContactActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(ContactActivity.this, new String[]{Manifest.permission.CALL_PHONE}, 123);
             return false;
         }
         return true;
     }
+
+    @Override
+    public boolean onQueryTextSubmit(String s) {
+
+
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+
+      //  DatabaseHelper db ;
+     //   db = new DatabaseHelper(getApplicationContext());
+     //   ArrayList<Contact> medRecords = db.Search(newText);
+     //   for (int i = 0; i < medRecords.size(); i++) {
+     //       String name = medRecords.get(i).getName();
+     //       String symp = medRecords.get(i).getNumber();
+     //   }
+         adapter.getFilter().filter(newText);
+
+
+        return false;
+    }
+
 }
