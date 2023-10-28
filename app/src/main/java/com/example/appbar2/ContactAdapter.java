@@ -74,13 +74,13 @@ public class ContactAdapter extends BaseAdapter{
                 if (charString.isEmpty()) {
                     filteredList = contacts;
                 } else {
-                    ArrayList<Contact> MountainFilteredList = new ArrayList<>();
+                    ArrayList<Contact> FilteredList = new ArrayList<>();
                     for (Contact item : contacts) {
                         if (item.getName().toLowerCase().contains(charString.toLowerCase())) {
-                            MountainFilteredList.add(item);
+                            FilteredList.add(item);
                         }
                     }
-                    filteredList = MountainFilteredList;
+                    filteredList = FilteredList;
                 }
                 FilterResults filterResults = new FilterResults();
                 filterResults.values = filteredList;
@@ -92,8 +92,12 @@ public class ContactAdapter extends BaseAdapter{
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
 
                 contacts.clear();
+                //filteredList = (ArrayList<Contact>) filterResults.values;
                 contacts.addAll((Collection<? extends Contact>) filterResults.values);
-                filteredList = (ArrayList<Contact>) filterResults.values;
+
+
+
+
                 notifyDataSetChanged();
             }
         };

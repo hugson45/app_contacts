@@ -182,8 +182,9 @@ public class ContactActivity extends AppCompatActivity implements SearchView.OnQ
     }
 
     @Override
-    public boolean onQueryTextSubmit(String s) {
+    public boolean onQueryTextSubmit(String newText) {
 
+        adapter.getFilter().filter(newText);
 
         return false;
     }
